@@ -51,7 +51,7 @@ public class TarefaApplicationService implements TarefaService {
                 tarefaRepository.buscaTarefaPorId(idTarefa).orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND, "Tarefa não encontrada!"));
         tarefa.pertenceAoUsuario(usuarioPorEmail);
         tarefa.atualiza(tarefaAlteracaoRequest);
-        tarefaRepository.atualiza(tarefa);
+        tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - editaTarefa");
 
 
