@@ -19,8 +19,9 @@ public interface TarefaAPI {
     TarefaDetalhadoResponse detalhaTarefa(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idTarefa);
 
-    @DeleteMapping
-    @ResponseStatus(code = HttpStatus.OK)
-    void limparTodasAsTarefas(@RequestHeader(name = "Authorization",required = true) String token);
+    @DeleteMapping("/deleta-todas_tarefas/{idUsuario}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void limparTodasAsTarefas(@RequestHeader(name = "Authorization",required = true) String token,
+    		@PathVariable UUID idUsuario);
 
 }

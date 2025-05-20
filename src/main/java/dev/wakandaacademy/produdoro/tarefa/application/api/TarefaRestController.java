@@ -35,11 +35,13 @@ public class TarefaRestController implements TarefaAPI {
 		return new TarefaDetalhadoResponse(tarefa);
 	}
 
+
+
 	@Override
-	public void limparTodasAsTarefas(String token) {
+	public void limparTodasAsTarefas(String token, UUID idUsuario) {
 		log.info("[inicia] TarefaRestController - limparTodasAsTarefas");
 		String usuario = getUsuarioByToken(token);
-		tarefaService.limparTodasAsTarefas(usuario);
+		tarefaService.limparTodasAsTarefas(usuario, idUsuario);
 		log.info("[finaliza] TarefaRestController - limparTodasAsTarefas");
 	}
 
