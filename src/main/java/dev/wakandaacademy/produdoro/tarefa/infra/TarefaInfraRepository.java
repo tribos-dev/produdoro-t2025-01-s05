@@ -37,4 +37,16 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - buscaTarefaPorId");
         return tarefaPorId;
     }
+
+    @Override
+    public void atualiza(Tarefa tarefa) {
+        log.info("[inicia] TarefaInfraRepository - atualiza");
+        try {
+            tarefaSpringMongoDBRepository.save(tarefa);
+        } catch (DataIntegrityViolationException e) {
+            throw APIException.build(HttpStatus.BAD_REQUEST, "Tarefa já cadastrada", e);
+        }
+        log.info("[finaliza] TarefaInfraRepository - atualiza");
+
+    }
 }
