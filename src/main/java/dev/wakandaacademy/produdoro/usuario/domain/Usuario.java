@@ -66,6 +66,7 @@ public class Usuario {
 		}
 	}
 
+<<<<<<< HEAD
 	public void mudaStatusParaPausaCurta(UUID idUsuario) {
 		pertenceAoUsuario(idUsuario);
 		verificaSeJaEstaEmPausaCurta();
@@ -88,3 +89,18 @@ public class Usuario {
 		}
 	}
 }
+=======
+    public void mudaStatusParaFoco(UUID idUsuario) {
+		validaUsuario(idUsuario);
+		validaSeUsuarioJaEstaEmFoco();
+		this.status = StatusUsuario.FOCO;
+
+    }
+
+	private void validaSeUsuarioJaEstaEmFoco() {
+		if (this.status.equals(StatusUsuario.FOCO)) {
+			throw APIException.build(HttpStatus.BAD_REQUEST,"Usuário já está em FOCO");
+		}
+	}
+}
+>>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9

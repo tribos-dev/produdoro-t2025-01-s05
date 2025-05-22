@@ -3,6 +3,7 @@ package dev.wakandaacademy.produdoro.tarefa.domain;
 import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
@@ -56,10 +57,15 @@ public class Tarefa {
 		}
 	}
 
+<<<<<<< HEAD
 	public void ativa(){
 		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
 	}
 	public void inativa(){
 		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
+=======
+	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
+			this.descricao = tarefaAlteracaoRequest.getDescricao();
+>>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
 	}
 }
