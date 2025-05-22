@@ -17,8 +17,8 @@ import org.springframework.http.HttpStatus;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class UsuarioApplicationServiceTest {
     @InjectMocks
@@ -73,4 +73,41 @@ class UsuarioApplicationServiceTest {
         assertEquals("Usuário já esta em PAUSA LONGA!", ex.getMessage());
     }
 
+    @Test
+    void deveMudarStatusParaPausaCurta() {
+        Usuario usuario = DataHelper.createUsuario();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(usuario.getIdUsuario())).thenReturn(usuario);
+        usuarioApplicationService.mudaStatusParaPausaCurta(usuario.getEmail(), usuario.getIdUsuario());
+        assertEquals(StatusUsuario.PAUSA_CURTA, usuario.getStatus());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuario.getIdUsuario());
+        verify(usuarioRepository, times(1)).salva(usuario);
+    }
+
+    @Test
+    void lancaExcecaoQuandoUsuarioNaoTemIdValido() {
+        Usuario usuario = DataHelper.createUsuarioFoco();
+        UUID idInvalido = UUID.randomUUID();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(idInvalido)).thenReturn(null);
+        APIException ex = assertThrows(APIException.class, () -> {
+            usuarioApplicationService.mudaStatusParaPausaCurta(usuario.getEmail(), idInvalido);
+        });
+        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusException());
+        assertEquals("Credencial de autenticação não é válida.", ex.getMessage());
+    }
+
+    @Test
+    void lancaExcecaoQuandoUsuarioJaEstaEmPausaCurta() {
+        Usuario usuario = DataHelper.createUsuarioPausaCurta();
+        UUID idUsuario = usuario.getIdUsuario();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(idUsuario)).thenReturn(usuario);
+        APIException ex = assertThrows(APIException.class, () -> {
+            usuarioApplicationService.mudaStatusParaPausaCurta(usuario.getEmail(), idUsuario);
+        });
+        assertEquals(HttpStatus.CONFLICT, ex.getStatusException());
+        assertEquals("Usuário já esta em PAUSA CURTA!", ex.getMessage());
+    }
 }
