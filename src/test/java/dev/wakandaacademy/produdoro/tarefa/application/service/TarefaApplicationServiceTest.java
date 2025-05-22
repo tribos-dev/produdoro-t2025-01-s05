@@ -41,7 +41,7 @@ class TarefaApplicationServiceTest {
     @Mock
     TarefaRepository tarefaRepository;
 
-     @Mock
+    @Mock
     UsuarioRepository usuarioRepository;
 
     @Test
@@ -57,14 +57,13 @@ class TarefaApplicationServiceTest {
     }
 
 
-
     public TarefaRequest getTarefaRequest() {
         TarefaRequest request = new TarefaRequest("tarefa 1", UUID.randomUUID(), null, null, 0);
         return request;
     }
 
     @Test
-    void deveRetornarTarefasCadastradasPeloUsuarioLogado() {
+    void retornarTarefasCadastradasPeloUsuarioLogado() {
         Usuario usuario = DataHelper.createUsuario();
         List<Tarefa> tarefas = DataHelper.createListTarefa();
 
@@ -79,7 +78,7 @@ class TarefaApplicationServiceTest {
     }
 
     @Test
-    void RetornarListaVaziaDoUsuario() {
+    void retornarListaVaziaDoUsuario() {
         Usuario usuario = DataHelper.createUsuario();
         List<Tarefa> listaVazia = new ArrayList<>();
 
@@ -93,4 +92,16 @@ class TarefaApplicationServiceTest {
         verify(tarefaRepository, times(1)).buscaTarefasDoUsuario(usuario.getIdUsuario());
     }
 
+    @Test
+    public void lancarExcecaoQuandoUsuarioSolicitarTarefaENaoEstiverLogado() {
+        UUID usuarioInexistente = UUID.randomUUID();
+        when(usuarioRepository.buscaUsuarioPorId(usuarioInexistente))
+                .thenThrow((APIException.build(HttpStatus.BAD_REQUEST, "Usuario não encontrado!")));
+        APIException exception = assertThrows(APIException.class, () -> {
+            tarefaApplicationService.listaTodasTarefasDoUsuario("email@exemplo.com", usuarioInexistente);
+        });
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusException());
+        assertEquals("Usuario não encontrado!", exception.getMessage());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuarioInexistente);
+    }
 }
