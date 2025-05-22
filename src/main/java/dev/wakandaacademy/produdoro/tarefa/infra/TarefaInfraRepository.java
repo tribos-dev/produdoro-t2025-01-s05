@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
 @Repository
 @Log4j2
 @RequiredArgsConstructor
@@ -47,5 +46,5 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - buscaTarefasPorUsuario");
         return tarefas;
     }
- 
+
 }
