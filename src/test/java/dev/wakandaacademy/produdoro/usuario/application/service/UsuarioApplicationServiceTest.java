@@ -17,8 +17,9 @@ import org.springframework.http.HttpStatus;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class UsuarioApplicationServiceTest {
     @InjectMocks
@@ -73,4 +74,17 @@ class UsuarioApplicationServiceTest {
         assertEquals("Usuário já esta em PAUSA LONGA!", ex.getMessage());
     }
 
+    @Test
+    void mudaStatusParaFoco() {
+        Usuario usuario = DataHelper.createUsuario();
+        when(usuarioRepository.salva(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        usuarioApplicationService.mudaStatusParaFoco(usuario.getEmail(), usuario.getIdUsuario());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuario.getIdUsuario());
+        verify(usuarioRepository, times(1)).salva(usuario);
+        assertEquals(StatusUsuario.FOCO, usuario.getStatus());
+    }
+
 }
+
