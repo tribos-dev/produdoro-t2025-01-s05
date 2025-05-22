@@ -59,7 +59,5 @@ public class Tarefa {
 	public void ativa(){
 		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
 	}
-	public void inativa(){
-		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
-	}
+
 }
