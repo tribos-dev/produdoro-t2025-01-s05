@@ -3,6 +3,7 @@ package dev.wakandaacademy.produdoro.tarefa.domain;
 import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
@@ -51,19 +52,23 @@ public class Tarefa {
 	}
 
 	public void pertenceAoUsuario(Usuario usuarioPorEmail) {
-		if(!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
+		if (!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário não é dono da Tarefa solicitada!");
 		}
 	}
 
-    public void concluiTarefa() {
+	public void concluiTarefa() {
 		validaStatusTarefaConcluida();
 		this.status = StatusTarefa.CONCLUIDA;
-    }
+	}
 
 	private void validaStatusTarefaConcluida() {
 		if (this.status.equals(StatusTarefa.CONCLUIDA)) {
 			throw APIException.build(HttpStatus.CONFLICT, "Tarefa já está concluída!");
 		}
 	}
-}
+		public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest){
+			this.descricao = tarefaAlteracaoRequest.getDescricao();
+		}
+	}
+
