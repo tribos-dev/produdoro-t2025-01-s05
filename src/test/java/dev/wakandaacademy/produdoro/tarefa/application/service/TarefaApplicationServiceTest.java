@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 import dev.wakandaacademy.produdoro.DataHelper;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
+import dev.wakandaacademy.produdoro.tarefa.domain.StatusTarefa;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 import org.junit.jupiter.api.Test;
@@ -119,4 +120,16 @@ class TarefaApplicationServiceTest {
         assertEquals("Usuario não encontrado!", exception.getMessage());
         verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuarioInexistente);
     }
+
+    @Test
+    public void deveConcluiTarefa(){
+        Usuario usuario = DataHelper.createUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
+        tarefaApplicationService.concluiTarefa(usuario.getEmail(),tarefa.getIdTarefa());
+        assertEquals(tarefa.getStatus(), StatusTarefa.CONCLUIDA);
+
+    }
+
 }
