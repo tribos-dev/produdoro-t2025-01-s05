@@ -46,7 +46,6 @@ public class UsuarioController implements UsuarioAPI {
 		log.info("[finaliza] UsuarioController - mudaStatusParaPausaLonga");
 	}
 
-<<<<<<< HEAD
 	@Override
 	public void mudaStatusParaPausaCurta(String token, UUID idUsuario) {
 		log.info("[inicia] UsuarioController - mudaStatusParaPausaCurta");
@@ -56,7 +55,6 @@ public class UsuarioController implements UsuarioAPI {
 	}
 
 	private String getUsuarioByToken(String token) {
-=======
     @Override
     public void mudaStatusParaFoco(String token, UUID idUsuario) {
         log.info("[inicia] UsuarioController - mudaStatusParaFoco");
@@ -68,7 +66,6 @@ public class UsuarioController implements UsuarioAPI {
     }
 
     private String getUsuarioByToken(String token) {
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
 		log.info("[usuario] {}", usuario);

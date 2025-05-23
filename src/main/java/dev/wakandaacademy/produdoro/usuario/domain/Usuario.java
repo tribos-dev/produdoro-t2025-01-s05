@@ -66,7 +66,6 @@ public class Usuario {
 		}
 	}
 
-<<<<<<< HEAD
 	public void mudaStatusParaPausaCurta(UUID idUsuario) {
 		pertenceAoUsuario(idUsuario);
 		verificaSeJaEstaEmPausaCurta();
@@ -89,7 +88,7 @@ public class Usuario {
 		}
 	}
 }
-=======
+
     public void mudaStatusParaFoco(UUID idUsuario) {
 		validaUsuario(idUsuario);
 		validaSeUsuarioJaEstaEmFoco();
@@ -103,4 +102,3 @@ public class Usuario {
 		}
 	}
 }
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
