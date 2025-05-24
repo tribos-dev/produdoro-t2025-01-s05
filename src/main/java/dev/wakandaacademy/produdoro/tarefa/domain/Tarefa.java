@@ -57,5 +57,24 @@ public class Tarefa {
 		}
 	}
 
+//	public void incrementaPomodoro(Tarefa tarefa, Usuario usuario) {
+//		pertenceAoUsuario(usuario);
+//		if (!verificaSeUsuarioEstaEmFoco(usuario)) {
+//			//ativaTarefa();
+//			//usuario.mudaParaFoco(usuario.getIdUsuario());
+//		} else {
+//			adicionaUmPomodoro(tarefa);
+//			//verificar a quantidade de pomodoros para mudar status do usuario
+//
+//		}
+//
+//	}
 
+	public void incrementaPomodoro(Tarefa tarefa) {
+		this.contagemPomodoro++;
+	}
+
+//	public boolean verificaSeUsuarioEstaEmFoco(Usuario usuario) {
+//		return usuario != null && StatusUsuario.FOCO.equals(usuario.getStatus());
+//	}
 }

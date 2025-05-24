@@ -60,9 +60,34 @@ public class Usuario {
 		this.status = StatusUsuario.PAUSA_LONGA;
 	}
 
+	private void iniciaPausaCurta() {
+		this.status = StatusUsuario.PAUSA_CURTA;
+	}
+
 	private void verificaSeJaEstaEmPausaLonga() {
 		if(this.status.equals(StatusUsuario.PAUSA_LONGA)) {
 			throw APIException.build(HttpStatus.CONFLICT, "Usuário já esta em PAUSA LONGA!");
 		}
 	}
+
+	public boolean verificaSeUsuarioEstaEmFoco(Usuario usuario) {
+		return StatusUsuario.FOCO.equals(usuario.getStatus());
+	}
+
+	public void atualizaStatusUsuario() {
+		int quantidadePausasCurtas = this.getQuantidadePomodorosPausaCurta();
+		int limite = this.getConfiguracao().getRepeticoesParaPausaLonga(); // == 3
+
+		if (quantidadePausasCurtas >= limite) {
+			iniciaPausaLonga();
+			this.setQuantidadePomodorosPausaCurta(0);
+		} else {
+			iniciaPausaCurta();
+			this.setQuantidadePomodorosPausaCurta(quantidadePausasCurtas + 1);
+		}
+	}
+	private void setQuantidadePomodorosPausaCurta(int novoValor) {
+		this.quantidadePomodorosPausaCurta = novoValor;
+	}
+
 }
