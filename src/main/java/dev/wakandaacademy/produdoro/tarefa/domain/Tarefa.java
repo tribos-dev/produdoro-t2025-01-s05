@@ -3,6 +3,7 @@ package dev.wakandaacademy.produdoro.tarefa.domain;
 import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
@@ -47,34 +48,35 @@ public class Tarefa {
 		this.idArea = tarefaRequest.getIdArea();
 		this.idProjeto = tarefaRequest.getIdProjeto();
 		this.status = StatusTarefa.A_FAZER;
-		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
 		this.contagemPomodoro = 1;
 	}
 
 	public void pertenceAoUsuario(Usuario usuarioPorEmail) {
-		if(!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
+		if (!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário não é dono da Tarefa solicitada!");
 		}
 	}
 
-//	public void incrementaPomodoro(Tarefa tarefa, Usuario usuario) {
-//		pertenceAoUsuario(usuario);
-//		if (!verificaSeUsuarioEstaEmFoco(usuario)) {
-//			//ativaTarefa();
-//			//usuario.mudaParaFoco(usuario.getIdUsuario());
-//		} else {
-//			adicionaUmPomodoro(tarefa);
-//			//verificar a quantidade de pomodoros para mudar status do usuario
-//
-//		}
-//
-//	}
-
 	public void incrementaPomodoro(Tarefa tarefa) {
+
 		this.contagemPomodoro++;
 	}
 
-//	public boolean verificaSeUsuarioEstaEmFoco(Usuario usuario) {
-//		return usuario != null && StatusUsuario.FOCO.equals(usuario.getStatus());
-//	}
+	public void concluiTarefa() {
+		validaStatusTarefaConcluida();
+		this.status = StatusTarefa.CONCLUIDA;
+	}
+
+	private void validaStatusTarefaConcluida() {
+		if (this.status.equals(StatusTarefa.CONCLUIDA)) {
+			throw APIException.build(HttpStatus.CONFLICT, "Tarefa já está concluída!");
+		}
+	}
+	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest){
+		this.descricao = tarefaAlteracaoRequest.getDescricao();
+	}
+
 }
+
+

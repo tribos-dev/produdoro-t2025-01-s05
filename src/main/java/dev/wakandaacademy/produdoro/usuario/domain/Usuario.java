@@ -86,8 +86,21 @@ public class Usuario {
 			this.setQuantidadePomodorosPausaCurta(quantidadePausasCurtas + 1);
 		}
 	}
+
 	private void setQuantidadePomodorosPausaCurta(int novoValor) {
 		this.quantidadePomodorosPausaCurta = novoValor;
+	}
+
+    public void mudaStatusParaFoco(UUID idUsuario) {
+		validaUsuario(idUsuario);
+		validaSeUsuarioJaEstaEmFoco();
+		this.status = StatusUsuario.FOCO;
+    }
+
+	private void validaSeUsuarioJaEstaEmFoco() {
+		if (this.status.equals(StatusUsuario.FOCO)) {
+			throw APIException.build(HttpStatus.BAD_REQUEST,"Usuário já está em FOCO");
+		}
 	}
 
 }
