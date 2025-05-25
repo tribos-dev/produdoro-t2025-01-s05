@@ -12,10 +12,6 @@ import java.util.UUID;
 public interface TarefaService {
     TarefaIdResponse criaNovaTarefa(TarefaRequest tarefaRequest);
     Tarefa detalhaTarefa(String usuario, UUID idTarefa);
-<<<<<<< HEAD
-    void ativaTarefa(String usuario, UUID idTarefa);
-=======
     void editaTarefa(String usuario, UUID idTarefa, TarefaAlteracaoRequest tarefaAlteracaoRequest);
     List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(String email, UUID idUsuario);
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
 }

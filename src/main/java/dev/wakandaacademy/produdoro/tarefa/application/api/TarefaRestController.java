@@ -36,16 +36,6 @@ public class TarefaRestController implements TarefaAPI {
 		return new TarefaDetalhadoResponse(tarefa);
 	}
 
-	@Override
-<<<<<<< HEAD
-	public void ativaTarefa(String token, UUID idTarefa) {
-		log.info("[inicia] TarefaRestController - ativaTarefa");
-		String usuario = getUsuarioByToken(token);
-		tarefaService.ativaTarefa(usuario, idTarefa);
-		log.info("[finaliza] TarefaRestController - ativaTarefa");
-	}
-
-=======
 	public void editaTarefa(String token, UUID idTarefa, TarefaAlteracaoRequest tarefaAlteracaoRequest) {
 		log.info("[inicia] TarefaRestController - patchTarefa");
 		String usuario = getUsuarioByToken(token);
@@ -54,16 +44,12 @@ public class TarefaRestController implements TarefaAPI {
 
 	}
 
-
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
 		log.info("[usuario] {}", usuario);
 		return usuario;
 	}
-<<<<<<< HEAD
-=======
 
 	@Override
 	public List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(String token, UUID idUsuario) {
@@ -73,6 +59,4 @@ public class TarefaRestController implements TarefaAPI {
 		log.info("[finaliza] TarefaRestController - listaTodasTarefasUsuario");
 		return tarefasUsuario;
 	}
-
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
 }

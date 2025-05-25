@@ -43,17 +43,6 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[finaliza] TarefaApplicationService - detalhaTarefa");
         return tarefa;
     }
-<<<<<<< HEAD
-    @Override
-    public void ativaTarefa(String usuario, UUID idTarefa) {
-        log.info("[inicia] TarefaApplicationService - ativaTarefa");
-        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuario);
-        Tarefa tarefa = tarefaRepository.buscaTarefaPorId(idTarefa)
-                .orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND, "Id da Tarefa Inválido!"));
-        log.info("[finaliza] TarefaApplicationService - ativaTarefa");
-    }
-}
-=======
 
     @Override
     public void editaTarefa(String usuario, UUID idTarefa, TarefaAlteracaoRequest tarefaAlteracaoRequest) {
@@ -80,4 +69,3 @@ public class TarefaApplicationService implements TarefaService {
         return TarefaUsuarioListResponse.converte(tarefas);
     }
 }
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9

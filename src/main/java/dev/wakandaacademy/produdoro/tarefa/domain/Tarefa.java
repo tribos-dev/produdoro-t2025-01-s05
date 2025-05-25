@@ -57,15 +57,7 @@ public class Tarefa {
 		}
 	}
 
-<<<<<<< HEAD
-	public void ativa(){
-		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
-	}
-	public void inativa(){
-		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
-=======
-	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
+	public void   atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
 			this.descricao = tarefaAlteracaoRequest.getDescricao();
->>>>>>> c73035a5d11f2f0fd631eb1eca7e9253f2794ba9
 	}
 }
