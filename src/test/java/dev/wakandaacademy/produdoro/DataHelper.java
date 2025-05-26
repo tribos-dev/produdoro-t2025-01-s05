@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.pomodoro.domain.ConfiguracaoPadrao;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
@@ -17,6 +18,10 @@ public class DataHelper {
 
     public static Usuario createUsuario() {
         return Usuario.builder().email("email@email.com").status(StatusUsuario.PAUSA_LONGA).idUsuario(usuario1).build();
+    }
+
+    public static Usuario createUsuarioFoco() {
+        return Usuario.builder().email("email@email.com").status(StatusUsuario.FOCO).idUsuario(usuario1).build();
     }
 
     public static Tarefa createTarefa() {
@@ -52,5 +57,10 @@ public class DataHelper {
                 Tarefa.builder().build()
 
         );
+    }
+
+    public static TarefaAlteracaoRequest createAlteracaoTarefa() {
+        TarefaAlteracaoRequest tarefaAlteracaoRequest = new TarefaAlteracaoRequest("descricao");
+        return tarefaAlteracaoRequest;
     }
 }

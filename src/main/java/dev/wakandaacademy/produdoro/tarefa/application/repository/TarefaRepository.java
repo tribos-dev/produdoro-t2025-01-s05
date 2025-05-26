@@ -12,4 +12,6 @@ public interface TarefaRepository {
     Tarefa salva(Tarefa tarefa);
     Optional<Tarefa> buscaTarefaPorId(UUID idTarefa);
     void limpaTarefas(Usuario usuarioPorEmail);
+    List<Tarefa> buscaTarefasDoUsuario(UUID idUsuario);
+    void deletaTodasTarefasDoUsuario(List<Tarefa> tarefas);
 }
