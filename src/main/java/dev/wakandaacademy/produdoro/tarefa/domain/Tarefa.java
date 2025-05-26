@@ -77,6 +77,9 @@ public class Tarefa {
 		this.descricao = tarefaAlteracaoRequest.getDescricao();
 	}
 
+	public void ativaTarefa(UUID idTarefa) {
+		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+	}
 }
 
 

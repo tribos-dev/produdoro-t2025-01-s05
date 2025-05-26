@@ -34,6 +34,7 @@ public interface TarefaAPI {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void editaTarefa(@RequestHeader(name = "Authorization",required = true) String token,
                      @PathVariable UUID idTarefa, @RequestBody @Valid TarefaAlteracaoRequest tarefaAlteracaoRequest);
+
     @GetMapping("/lista-tarefas/{idUsuario}")
     @ResponseStatus(code = HttpStatus.OK)
     List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(

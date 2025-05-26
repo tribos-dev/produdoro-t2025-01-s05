@@ -50,12 +50,13 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[usuario] {}", usuario);
         Tarefa tarefa = buscaTarefaOuLancaExpection(idTarefa);
         tarefa.pertenceAoUsuario(usuario);
-        usuario.verificaSeUsuarioEstaEmFoco(usuario);
+        usuario.mudaStatusParaFoco(usuario.getIdUsuario());
+        tarefa.ativaTarefa(idTarefa);
         tarefa.incrementaPomodoro(tarefa);
         usuario.atualizaStatusUsuario();
         usuarioRepository.salva(usuario);
         tarefaRepository.salva(tarefa);
-        log.info("[inicia] TarefaApplicationService - incrementaPomodoro");
+        log.info("[finaliza] TarefaApplicationService - incrementaPomodoro");
     }
 
     public void concluiTarefa(String emailUsuario, UUID idTarefa) {

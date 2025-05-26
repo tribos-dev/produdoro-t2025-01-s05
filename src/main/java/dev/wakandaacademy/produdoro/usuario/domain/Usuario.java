@@ -70,10 +70,6 @@ public class Usuario {
 		}
 	}
 
-	public boolean verificaSeUsuarioEstaEmFoco(Usuario usuario) {
-		return StatusUsuario.FOCO.equals(usuario.getStatus());
-	}
-
 	public void atualizaStatusUsuario() {
 		int quantidadePausasCurtas = this.getQuantidadePomodorosPausaCurta();
 		int limite = this.getConfiguracao().getRepeticoesParaPausaLonga(); // == 3
