@@ -44,6 +44,15 @@ public class TarefaApplicationService implements TarefaService {
         return tarefa;
     }
 
+    @Override
+    public void concluiTarefa(String emailUsuario, UUID idTarefa) {
+        log.info("[inicia] TarefaApplicationService - concluiTarefa");
+        Tarefa tarefa = detalhaTarefa(emailUsuario, idTarefa);
+        log.debug("[tarefa] {}", tarefa);
+        tarefa.concluiTarefa();
+        tarefaRepository.salva(tarefa);
+        log.info("[finaliza] TarefaApplicationService - concluiTarefa");
+    }
 
     @Override
     public void editaTarefa(String usuario, UUID idTarefa, TarefaAlteracaoRequest tarefaAlteracaoRequest) {
@@ -56,8 +65,6 @@ public class TarefaApplicationService implements TarefaService {
         tarefa.atualiza(tarefaAlteracaoRequest);
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - editaTarefa");
-
-
     }
 
     @Override
@@ -76,26 +83,22 @@ public class TarefaApplicationService implements TarefaService {
         Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuario);
         log.info("[usuarioPorEmail] {}", usuarioPorEmail);
         usuarioRepository.buscaUsuarioPorId(idUsuario);
+        usuarioPorEmail.validaUsuario(idUsuario);
         List<Tarefa> tarefas = tarefaRepository.buscaTarefasDoUsuario(idUsuario);
         verificaSeListaEstaVazia(tarefas);
         verificaQuantidadeTarefas(tarefas);
         tarefaRepository.deletaTodasTarefasDoUsuario(tarefas);
         log.info("[finaliza] TarefaApplicationService - limparTodasAsTarefas");
     }
-
         private void verificaSeListaEstaVazia(List<Tarefa> tarefas) {
             if (tarefas.isEmpty()) {
-                throw APIException.build(HttpStatus.NOT_FOUND, "Usuário não possui tarefa(s) cadastrada(s)");
+                throw APIException.build(HttpStatus.CONFLICT, "Usuário não possui tarefa(s) cadastrada(s)");
             }
         }
-
         private void verificaQuantidadeTarefas(List<Tarefa> tarefas) {
             if (tarefas.size() < 2) {
                 throw APIException.build(HttpStatus.NOT_FOUND, "Usuário não possui quantidade " +
                         "minima de tarefa(as) cadastrada(as)");
-
-
             }
-
     }
 }
