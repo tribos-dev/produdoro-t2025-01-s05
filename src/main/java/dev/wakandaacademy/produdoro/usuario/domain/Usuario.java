@@ -87,7 +87,6 @@ public class Usuario {
 			throw APIException.build(HttpStatus.CONFLICT, "Usuário já esta em PAUSA CURTA!");
 		}
 	}
-}
 
     public void mudaStatusParaFoco(UUID idUsuario) {
 		validaUsuario(idUsuario);

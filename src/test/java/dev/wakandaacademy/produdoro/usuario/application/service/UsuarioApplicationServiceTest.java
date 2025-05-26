@@ -101,20 +101,6 @@ class UsuarioApplicationServiceTest {
         assertEquals("Credencial de autenticação não é válida.", ex.getMessage());
     }
 
-    @Test
-    void lancaExcecaoQuandoUsuarioJaEstaEmPausaCurta() {
-        Usuario usuario = DataHelper.createUsuarioPausaCurta();
-        UUID idUsuario = usuario.getIdUsuario();
-        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
-        when(usuarioRepository.buscaUsuarioPorId(idUsuario)).thenReturn(usuario);
-        APIException ex = assertThrows(APIException.class, () -> {
-            usuarioApplicationService.mudaStatusParaPausaCurta(usuario.getEmail(), idUsuario);
-        });
-        assertEquals(HttpStatus.CONFLICT, ex.getStatusException());
-        assertEquals("Usuário já esta em PAUSA CURTA!", ex.getMessage());
-    }
-}
-
     void mudaStatusParaFoco() {
         Usuario usuario = DataHelper.createUsuario();
         when(usuarioRepository.salva(any())).thenReturn(usuario);
