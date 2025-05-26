@@ -60,7 +60,7 @@ class TarefaApplicationServiceTest {
     }
 
     @Test
-    void deveEditarTarefa(){
+    void deveEditarTarefa() {
         Tarefa tarefa = DataHelper.createTarefa();
         Usuario usuario = DataHelper.createUsuario();
         TarefaAlteracaoRequest tarefaAlteracaoRequest = DataHelper.createAlteracaoTarefa();
@@ -118,5 +118,17 @@ class TarefaApplicationServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusException());
         assertEquals("Usuario não encontrado!", exception.getMessage());
         verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuarioInexistente);
+    }
+
+    @Test
+    void deveExcluirTodasAsTarefasDoUsuario() {
+        Usuario usuario = DataHelper.createUsuario();
+        List<Tarefa> tarefas = DataHelper.createListTarefa();
+
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefasDoUsuario(usuario.getIdUsuario())).thenReturn(tarefas);
+        tarefaApplicationService.limparTodasAsTarefas(usuario.getEmail(), usuario.getIdUsuario());
+        verify(tarefaRepository, times(1)).deletaTodasTarefasDoUsuario(tarefas);
     }
 }
