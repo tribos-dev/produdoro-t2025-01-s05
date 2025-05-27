@@ -67,6 +67,7 @@ public class TarefaApplicationService implements TarefaService {
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - concluiTarefa");
     }
+
     @Override
     public void editaTarefa(String usuario, UUID idTarefa, TarefaAlteracaoRequest tarefaAlteracaoRequest) {
         log.info("[inicia] TarefaApplicationService - editaTarefa");
@@ -96,4 +97,48 @@ public class TarefaApplicationService implements TarefaService {
         return tarefa;
     }
 
+    @Override
+    public void deletaTarefasConcluidas(String usuarioEmail, UUID idUsuario) {
+        log.info("[inicia] TarefaApplicationService - deletaTarefasConcluidas");
+        validaUsuario(usuarioEmail, idUsuario);
+        List<Tarefa> tarefas = tarefaRepository.buscaTarefasConcluidas(idUsuario);
+        if (tarefas.isEmpty()) {
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário não possui nenhuma tarefa concluída!");
+        }
+        tarefaRepository.deletaTarefasConcluidas(tarefas);
+        log.info("[finaliza] TarefaApplicationService - deletaTarefasConcluidas");
+    }
+
+    @Override
+    public void limparTodasAsTarefas(String usuario, UUID idUsuario) {
+        log.info("[inicia] TarefaApplicationService - limparTodasAsTarefas");
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuario);
+        log.info("[usuarioPorEmail] {}", usuarioPorEmail);
+        usuarioRepository.buscaUsuarioPorId(idUsuario);
+        usuarioPorEmail.validaUsuario(idUsuario);
+        List<Tarefa> tarefas = tarefaRepository.buscaTarefasDoUsuario(idUsuario);
+        verificaSeListaEstaVazia(tarefas);
+        verificaQuantidadeTarefas(tarefas);
+        tarefaRepository.deletaTodasTarefasDoUsuario(tarefas);
+        log.info("[finaliza] TarefaApplicationService - limparTodasAsTarefas");
+    }
+        private void verificaSeListaEstaVazia(List<Tarefa> tarefas) {
+            if (tarefas.isEmpty()) {
+                throw APIException.build(HttpStatus.CONFLICT, "Usuário não possui tarefa(s) cadastrada(s)");
+            }
+        }
+        private void verificaQuantidadeTarefas(List<Tarefa> tarefas) {
+            if (tarefas.size() < 2) {
+                throw APIException.build(HttpStatus.NOT_FOUND, "Usuário não possui quantidade " +
+                        "minima de tarefa(as) cadastrada(as)");
+            }
+    }
+
+    private void validaUsuario(String usuarioEmail, UUID idUsuario) {
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuarioEmail);
+        usuarioRepository.buscaUsuarioPorId(idUsuario);
+        usuarioPorEmail.validaUsuario(idUsuario);
+    }
+
 }
+

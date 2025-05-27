@@ -1,23 +1,16 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import dev.wakandaacademy.produdoro.DataHelper;
+import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaUsuarioListResponse;
+import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
 import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
 import dev.wakandaacademy.produdoro.tarefa.domain.StatusTarefa;
+import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
-import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,15 +19,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import dev.wakandaacademy.produdoro.DataHelper;
-import dev.wakandaacademy.produdoro.handler.APIException;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaUsuarioListResponse;
-import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
-import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
-import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
-import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TarefaApplicationServiceTest {
@@ -121,8 +113,8 @@ class TarefaApplicationServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusException());
         assertEquals("Usuario não encontrado!", exception.getMessage());
         verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuarioInexistente);
-    }
 
+    }
     @Test
     public void deveConcluiTarefa(){
         Usuario usuario = DataHelper.createUsuario();
@@ -178,4 +170,22 @@ class TarefaApplicationServiceTest {
         assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatusException());
     }
 
+    void deveExcluirTodasAsTarefasDoUsuario() {
+            Usuario usuario = DataHelper.createUsuario();
+            List<Tarefa> tarefas = DataHelper.createListTarefa();
+            when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+            when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
+            when(tarefaRepository.buscaTarefasDoUsuario(usuario.getIdUsuario())).thenReturn(tarefas);
+            tarefaApplicationService.limparTodasAsTarefas(usuario.getEmail(), usuario.getIdUsuario());
+            verify(tarefaRepository, times(1)).deletaTodasTarefasDoUsuario(tarefas);
+    }
+        @Test
+        void deveDeletarTarefasConcluidas() {
+            Usuario usuario = DataHelper.createUsuario();
+            List<Tarefa> tarefasConcluidas = DataHelper.createListTarefasConcluidas();
+            when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+            when(tarefaRepository.buscaTarefasConcluidas(any())).thenReturn(tarefasConcluidas);
+            tarefaApplicationService.deletaTarefasConcluidas(usuario.getEmail(), usuario.getIdUsuario());
+            verify(tarefaRepository, times(1)).deletaTarefasConcluidas(tarefasConcluidas);
+        }
 }

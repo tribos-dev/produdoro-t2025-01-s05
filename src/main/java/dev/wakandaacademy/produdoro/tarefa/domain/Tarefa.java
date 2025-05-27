@@ -59,9 +59,9 @@ public class Tarefa {
 	}
 
 	public void incrementaPomodoro(Tarefa tarefa) {
-
 		this.contagemPomodoro++;
 	}
+
 
 	public void concluiTarefa() {
 		validaStatusTarefaConcluida();
@@ -73,6 +73,7 @@ public class Tarefa {
 			throw APIException.build(HttpStatus.CONFLICT, "Tarefa já está concluída!");
 		}
 	}
+
 	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest){
 		this.descricao = tarefaAlteracaoRequest.getDescricao();
 	}

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -75,6 +77,30 @@ class UsuarioApplicationServiceTest {
     }
 
     @Test
+    void deveMudarStatusParaPausaCurta() {
+        Usuario usuario = DataHelper.createUsuario();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(usuario.getIdUsuario())).thenReturn(usuario);
+        usuarioApplicationService.mudaStatusParaPausaCurta(usuario.getEmail(), usuario.getIdUsuario());
+        assertEquals(StatusUsuario.PAUSA_CURTA, usuario.getStatus());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
+        verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuario.getIdUsuario());
+        verify(usuarioRepository, times(1)).salva(usuario);
+    }
+
+    @Test
+    void lancaExcecaoQuandoUsuarioNaoTemIdValido() {
+        Usuario usuario = DataHelper.createUsuarioFoco();
+        UUID idInvalido = UUID.randomUUID();
+        when(usuarioRepository.buscaUsuarioPorEmail(usuario.getEmail())).thenReturn(usuario);
+        when(usuarioRepository.buscaUsuarioPorId(idInvalido)).thenReturn(null);
+        APIException ex = assertThrows(APIException.class, () -> {
+            usuarioApplicationService.mudaStatusParaPausaCurta(usuario.getEmail(), idInvalido);
+        });
+        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusException());
+        assertEquals("Credencial de autenticação não é válida.", ex.getMessage());
+    }
+
     void mudaStatusParaFoco() {
         Usuario usuario = DataHelper.createUsuario();
         when(usuarioRepository.salva(any())).thenReturn(usuario);
@@ -87,4 +113,3 @@ class UsuarioApplicationServiceTest {
     }
 
 }
-
