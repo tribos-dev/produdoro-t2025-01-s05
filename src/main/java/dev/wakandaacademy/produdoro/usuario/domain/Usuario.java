@@ -36,7 +36,7 @@ public class Usuario {
 	private StatusUsuario status = StatusUsuario.FOCO;
 	@Builder.Default
 	private Integer quantidadePomodorosPausaCurta = 0;
-	
+
 	public Usuario(UsuarioNovoRequest usuarioNovo, ConfiguracaoPadrao configuracaoPadrao) {
 		this.idUsuario = UUID.randomUUID();
 		this.email = usuarioNovo.getEmail();
@@ -44,8 +44,20 @@ public class Usuario {
 		this.configuracao = new ConfiguracaoUsuario(configuracaoPadrao);
 	}
 
+	private void verificaStatusFoco() {
+
+		if (this.status.equals(StatusUsuario.FOCO)) {
+			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em FOCO!");
+		}
+		mudaStatusParaFoco();
+	}
+
+	private void mudaStatusParaFoco() {
+		this.status = StatusUsuario.FOCO;
+	}
+
 	public void validaUsuario(UUID idUsuario) {
-		if(!this.idUsuario.equals(idUsuario)) {
+		if (!this.idUsuario.equals(idUsuario)) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não é válida");
 		}
 	}
@@ -61,8 +73,30 @@ public class Usuario {
 	}
 
 	private void verificaSeJaEstaEmPausaLonga() {
-		if(this.status.equals(StatusUsuario.PAUSA_LONGA)) {
+		if (this.status.equals(StatusUsuario.PAUSA_LONGA)) {
 			throw APIException.build(HttpStatus.CONFLICT, "Usuário já esta em PAUSA LONGA!");
+		}
+	}
+
+	public void mudaStatusParaPausaCurta(UUID idUsuario) {
+		pertenceAoUsuario(idUsuario);
+		verificaSeJaEstaEmPausaCurta();
+		iniciaPausaCurta();
+	}
+
+	private void iniciaPausaCurta() {
+		this.status = StatusUsuario.PAUSA_CURTA;
+	}
+
+	private void pertenceAoUsuario(UUID idUsuario) {
+		if (!this.idUsuario.equals(idUsuario)) {
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não é válida.");
+		}
+	}
+
+	private void verificaSeJaEstaEmPausaCurta() {
+		if (this.status.equals(StatusUsuario.PAUSA_CURTA)) {
+			throw APIException.build(HttpStatus.CONFLICT, "Usuário já esta em PAUSA CURTA!");
 		}
 	}
 
