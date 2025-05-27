@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -107,9 +108,9 @@ public class TarefaInfraRepository implements TarefaRepository {
 
     private void validaNovaPosicao(int tamanhoLista, int posicaoOrigem, int novaPosicao) {
         log.info("[inicia] TarefaInfraRepository - validaNovaPosicao");
-        Optional.of(posicaoOrigem)
-                .filter(posicao -> posicao >= 0 && posicao < tamanhoLista)
-                .orElseThrow(() -> APIException.build(HttpStatus.BAD_REQUEST, "Posição inválida."));
+        if (!(novaPosicao >= 0 && novaPosicao < tamanhoLista)){
+            throw APIException.build(HttpStatus.BAD_REQUEST, "Posição inválida.");
+        }
         log.info("[finaliza] TarefaInfraRepository - validaNovaPosicao");
     }
 
