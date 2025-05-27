@@ -1,5 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.application.api;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,31 @@ public class TarefaRestController implements TarefaAPI {
 		return new TarefaDetalhadoResponse(tarefa);
 	}
 
+	@Override
+	public void limparTodasAsTarefas(String token, UUID idUsuario) {
+		log.info("[inicia] TarefaRestController - limparTodasAsTarefas");
+		String usuario = getUsuarioByToken(token);
+		tarefaService.limparTodasAsTarefas(usuario, idUsuario);
+		log.info("[finaliza] TarefaRestController - limparTodasAsTarefas");
+	}
+
+	@Override
+	public void patchConcluiTarefa(String token, UUID idTarefa) {
+		log.info("[inicia] TarefaRestController - patchConcluiTarefa");
+		String usuario = getUsuarioByToken(token);
+		tarefaService.concluiTarefa(usuario,idTarefa);
+		log.info("[finaliza] TarefaRestController - patchConcluiTarefa");
+	}
+
+	@Override
+	public void editaTarefa(String token, UUID idTarefa, TarefaAlteracaoRequest tarefaAlteracaoRequest) {
+		log.info("[inicia] TarefaRestController - patchTarefa");
+		String usuario = getUsuarioByToken(token);
+		tarefaService.editaTarefa(usuario, idTarefa, tarefaAlteracaoRequest);
+		log.info("[finaliza] TarefaRestController - patchTarefa");
+
+	}
+
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
@@ -42,6 +68,14 @@ public class TarefaRestController implements TarefaAPI {
 		return usuario;
 	}
 
+	@Override
+	public List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(String token, UUID idUsuario) {
+		log.info("[inicia] TarefaRestController - listaTodasTarefasUsuario");
+		String email = getUsuarioByToken(token);
+		List<TarefaUsuarioListResponse> tarefasUsuario = tarefaService.listaTodasTarefasDoUsuario(email, idUsuario);
+		log.info("[finaliza] TarefaRestController - listaTodasTarefasUsuario");
+		return tarefasUsuario;
+	}
 	public void deletaTarefasConcluidas(String token, UUID idUsuario) {
 		log.info("[inicia] TarefaRestController - deletaTodasSuasTarefas");
 		String usuarioEmail = getUsuarioByToken(token);
