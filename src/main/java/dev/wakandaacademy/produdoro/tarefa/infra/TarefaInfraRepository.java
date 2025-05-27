@@ -62,6 +62,12 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - modificaOrdemTarefa");
     }
 
+    @Override
+    public int contarTarefas(UUID idUsuario) {
+        return tarefaSpringMongoDBRepository.countTarefaByIdUsuario(idUsuario);
+
+    }
+
     private void validaNovaPosicao(int tamanhoLista, int posicaoOrigem, int novaPosicao) {
         log.info("[inicia] TarefaInfraRepository - validaNovaPosicao");
         Optional.of(posicaoOrigem)

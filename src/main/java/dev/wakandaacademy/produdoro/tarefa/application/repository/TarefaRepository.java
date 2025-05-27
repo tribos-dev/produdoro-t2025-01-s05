@@ -16,4 +16,7 @@ public interface TarefaRepository {
     void ajustaPosicaoDasTarefas(List<Tarefa> tarefasDoUsuario);
 
     void modificaOrdemTarefa(Tarefa tarefa, List<Tarefa> tarefasUsuario, int novaPosicao);
+
+    int contarTarefas(UUID idUsuario);
+
 }
