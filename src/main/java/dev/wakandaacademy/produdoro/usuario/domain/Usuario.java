@@ -65,4 +65,17 @@ public class Usuario {
 			throw APIException.build(HttpStatus.CONFLICT, "Usuário já esta em PAUSA LONGA!");
 		}
 	}
+
+    public void mudaStatusParaFoco(UUID idUsuario) {
+		validaUsuario(idUsuario);
+		validaSeUsuarioJaEstaEmFoco();
+		this.status = StatusUsuario.FOCO;
+
+    }
+
+	private void validaSeUsuarioJaEstaEmFoco() {
+		if (this.status.equals(StatusUsuario.FOCO)) {
+			throw APIException.build(HttpStatus.BAD_REQUEST,"Usuário já está em FOCO");
+		}
+	}
 }

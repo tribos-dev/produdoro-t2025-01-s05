@@ -1,5 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.application.api;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -19,6 +20,14 @@ public interface TarefaAPI {
     TarefaDetalhadoResponse detalhaTarefa(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idTarefa);
 
+    @PatchMapping("edita-tarefa/{idTarefa}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void editaTarefa(@RequestHeader(name = "Authorization",required = true) String token,
+                     @PathVariable UUID idTarefa, @RequestBody @Valid TarefaAlteracaoRequest tarefaAlteracaoRequest);
+    @GetMapping("/lista-tarefas/{idUsuario}")
+    @ResponseStatus(code = HttpStatus.OK)
+    List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(
+            @RequestHeader(name = "Authorization", required = true) String token, @PathVariable UUID idUsuario);
     @PatchMapping("/{idTarefa}/modifica-posicao-tarefa")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void usuarioModificaOrdemDeUmaTarefa(@RequestHeader(name = "Authorization", required = true) String token,
