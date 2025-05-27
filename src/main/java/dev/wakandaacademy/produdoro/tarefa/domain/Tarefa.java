@@ -5,6 +5,7 @@ import java.util.UUID;
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
 import org.springframework.data.annotation.Id;
@@ -59,9 +60,10 @@ public class Tarefa {
 		}
 	}
 
-	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
-			this.descricao = tarefaAlteracaoRequest.getDescricao();
+	public void incrementaPomodoro(Tarefa tarefa) {
+		this.contagemPomodoro++;
 	}
+
 
 	public void concluiTarefa() {
 		validaStatusTarefaConcluida();
@@ -74,6 +76,14 @@ public class Tarefa {
 		}
 	}
 
+	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest){
+		this.descricao = tarefaAlteracaoRequest.getDescricao();
+	}
+
+	public void ativaTarefa(UUID idTarefa) {
+		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+	}
+
 	public void alteraPosicao(int posicao) {
 		this.posicao= posicao;
 	}
@@ -82,3 +92,4 @@ public class Tarefa {
 		this.posicao = novaPosicao;
 	}
 }
+

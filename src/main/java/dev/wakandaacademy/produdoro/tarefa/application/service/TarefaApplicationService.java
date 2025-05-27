@@ -27,7 +27,6 @@ public class TarefaApplicationService implements TarefaService {
     private final TarefaRepository tarefaRepository;
     private final UsuarioRepository usuarioRepository;
 
-
     @Override
     public TarefaIdResponse criaNovaTarefa(TarefaRequest tarefaRequest) {
         log.info("[inicia] TarefaApplicationService - criaNovaTarefa");
@@ -49,6 +48,21 @@ public class TarefaApplicationService implements TarefaService {
     }
 
     @Override
+    public void incrementaPomodoro(String emailUsuario, UUID idTarefa) {
+        log.info("[inicia] TarefaApplicationService - incrementaPomodoro");
+        Usuario usuario = usuarioRepository.buscaUsuarioPorEmail(emailUsuario);
+        log.info("[usuario] {}", usuario);
+        Tarefa tarefa = buscaTarefaOuLancaExpection(idTarefa);
+        tarefa.pertenceAoUsuario(usuario);
+        usuario.garanteStatusFoco(usuario.getIdUsuario());
+        tarefa.ativaTarefa(idTarefa);
+        tarefa.incrementaPomodoro(tarefa);
+        usuario.atualizaStatusUsuario();
+        usuarioRepository.salva(usuario);
+        tarefaRepository.salva(tarefa);
+        log.info("[finaliza] TarefaApplicationService - incrementaPomodoro");
+    }
+
     public void concluiTarefa(String emailUsuario, UUID idTarefa) {
         log.info("[inicia] TarefaApplicationService - concluiTarefa");
         Tarefa tarefa = detalhaTarefa(emailUsuario, idTarefa);
@@ -81,6 +95,12 @@ public class TarefaApplicationService implements TarefaService {
         List<Tarefa> tarefas = tarefaRepository.buscaTarefasDoUsuario(idUsuario);
         log.info("[finaliza] TarefaApplicationService - listaTodasTarefasUsuario");
         return TarefaUsuarioListResponse.converte(tarefas);
+    }
+
+    private Tarefa buscaTarefaOuLancaExpection(UUID idTarefa) {
+        Tarefa tarefa =
+                tarefaRepository.buscaTarefaPorId(idTarefa).orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND, "Tarefa não encontrada!"));
+        return tarefa;
     }
 
     @Override
@@ -125,7 +145,6 @@ public class TarefaApplicationService implements TarefaService {
         usuarioRepository.buscaUsuarioPorId(idUsuario);
         usuarioPorEmail.validaUsuario(idUsuario);
     }
-
     @Override
     public void usuarioModificaOrdemDeUmaTarefa(String emailUsuario, UUID idTarefa, int novaPosicao) {
         log.info("[inicia] TarefaApplicationService - usuarioModificaOrdemDeUmaTarefa");

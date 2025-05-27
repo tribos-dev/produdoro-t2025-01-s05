@@ -45,7 +45,6 @@ public class Usuario {
 	}
 
 	private void verificaStatusFoco() {
-
 		if (this.status.equals(StatusUsuario.FOCO)) {
 			throw APIException.build(HttpStatus.BAD_REQUEST, "Usuário já está em FOCO!");
 		}
@@ -72,20 +71,36 @@ public class Usuario {
 		this.status = StatusUsuario.PAUSA_LONGA;
 	}
 
+	private void iniciaPausaCurta() {
+		this.status = StatusUsuario.PAUSA_CURTA;
+	}
+
 	private void verificaSeJaEstaEmPausaLonga() {
 		if (this.status.equals(StatusUsuario.PAUSA_LONGA)) {
 			throw APIException.build(HttpStatus.CONFLICT, "Usuário já esta em PAUSA LONGA!");
 		}
 	}
 
+	public void atualizaStatusUsuario() {
+		int quantidadePausasCurtas = this.getQuantidadePomodorosPausaCurta();
+		int limite = this.getConfiguracao().getRepeticoesParaPausaLonga();
+		if (quantidadePausasCurtas >= limite) {
+			iniciaPausaLonga();
+			this.setQuantidadePomodorosPausaCurta(0);
+		} else {
+			iniciaPausaCurta();
+			this.setQuantidadePomodorosPausaCurta(quantidadePausasCurtas + 1);
+		}
+	}
+
+	private void setQuantidadePomodorosPausaCurta(int novoValor) {
+		this.quantidadePomodorosPausaCurta = novoValor;
+	}
+
 	public void mudaStatusParaPausaCurta(UUID idUsuario) {
 		pertenceAoUsuario(idUsuario);
 		verificaSeJaEstaEmPausaCurta();
 		iniciaPausaCurta();
-	}
-
-	private void iniciaPausaCurta() {
-		this.status = StatusUsuario.PAUSA_CURTA;
 	}
 
 	private void pertenceAoUsuario(UUID idUsuario) {
@@ -104,7 +119,6 @@ public class Usuario {
 		validaUsuario(idUsuario);
 		validaSeUsuarioJaEstaEmFoco();
 		this.status = StatusUsuario.FOCO;
-
     }
 
 	private void validaSeUsuarioJaEstaEmFoco() {
@@ -112,4 +126,13 @@ public class Usuario {
 			throw APIException.build(HttpStatus.BAD_REQUEST,"Usuário já está em FOCO");
 		}
 	}
+
+	public void garanteStatusFoco(UUID idUsuario) {
+		if(!this.status.equals(StatusUsuario.FOCO)){
+			mudaStatusParaFoco(idUsuario);
+		}
+	}
+
 }
+
+
