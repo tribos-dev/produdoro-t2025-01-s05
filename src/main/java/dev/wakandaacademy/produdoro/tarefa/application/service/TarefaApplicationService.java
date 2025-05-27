@@ -50,7 +50,7 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[usuario] {}", usuario);
         Tarefa tarefa = buscaTarefaOuLancaExpection(idTarefa);
         tarefa.pertenceAoUsuario(usuario);
-        usuario.mudaStatusParaFoco(usuario.getIdUsuario());
+        usuario.garanteStatusFoco(usuario.getIdUsuario());
         tarefa.ativaTarefa(idTarefa);
         tarefa.incrementaPomodoro(tarefa);
         usuario.atualizaStatusUsuario();

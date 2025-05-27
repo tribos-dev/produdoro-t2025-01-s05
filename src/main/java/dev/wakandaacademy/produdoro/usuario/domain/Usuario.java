@@ -72,8 +72,7 @@ public class Usuario {
 
 	public void atualizaStatusUsuario() {
 		int quantidadePausasCurtas = this.getQuantidadePomodorosPausaCurta();
-		int limite = this.getConfiguracao().getRepeticoesParaPausaLonga(); // == 3
-
+		int limite = this.getConfiguracao().getRepeticoesParaPausaLonga();
 		if (quantidadePausasCurtas >= limite) {
 			iniciaPausaLonga();
 			this.setQuantidadePomodorosPausaCurta(0);
@@ -98,5 +97,12 @@ public class Usuario {
 			throw APIException.build(HttpStatus.BAD_REQUEST,"Usuário já está em FOCO");
 		}
 	}
+
+	public void garanteStatusFoco(UUID idUsuario) {
+		if(!this.status.equals(StatusUsuario.FOCO)){
+			mudaStatusParaFoco(idUsuario);
+		}
+	}
+
 
 }
