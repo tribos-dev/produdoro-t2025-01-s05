@@ -48,7 +48,6 @@ public class TarefaApplicationService implements TarefaService {
     }
 
     @Override
-<<<<<<< HEAD
     public void ativaTarefa(String email, UUID idTarefa) {
         log.info("[inicia] TarefaApplicationService - ativaTarefa");
         Tarefa tarefa = tarefaRepository.buscaTarefaPorId(idTarefa)
@@ -60,7 +59,7 @@ public class TarefaApplicationService implements TarefaService {
         tarefa.ativaTarefa();
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - ativaTarefa");
-=======
+    }
     public void incrementaPomodoro(String emailUsuario, UUID idTarefa) {
         log.info("[inicia] TarefaApplicationService - incrementaPomodoro");
         Usuario usuario = usuarioRepository.buscaUsuarioPorEmail(emailUsuario);
@@ -74,7 +73,6 @@ public class TarefaApplicationService implements TarefaService {
         usuarioRepository.salva(usuario);
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - incrementaPomodoro");
->>>>>>> cf63a9ce47bf9a919e6e9c43d118cb74d3558389
     }
 
     public void concluiTarefa(String emailUsuario, UUID idTarefa) {

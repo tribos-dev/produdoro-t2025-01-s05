@@ -62,7 +62,6 @@ public class Tarefa {
 
 
 	public void desativaTarefa() {
-
 		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
 	}
 
