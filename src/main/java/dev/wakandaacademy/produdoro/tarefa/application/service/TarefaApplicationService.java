@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,4 +41,22 @@ public class TarefaApplicationService implements TarefaService {
         log.info("[finaliza] TarefaApplicationService - detalhaTarefa");
         return tarefa;
     }
+
+    @Override
+    public void deletaTarefasConcluidas(String usuarioEmail, UUID idUsuario) {
+        log.info("[inicia] TarefaApplicationService - deletaTarefasConcluidas");
+        validaUsuario(usuarioEmail, idUsuario);
+        List<Tarefa> tarefas = tarefaRepository.buscaTarefasConcluidas(idUsuario);
+        if (tarefas.isEmpty()) {
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário não possui nenhuma tarefa concluída!");
+        }
+        tarefaRepository.deletaTarefasConcluidas(tarefas);
+        log.info("[finaliza] TarefaApplicationService - deletaTarefasConcluidas");
+    }
+
+    private void validaUsuario(String usuarioEmail, UUID idUsuario) {
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuarioEmail);
+        usuarioRepository.buscaUsuarioPorId(idUsuario);
+    }
 }
+
