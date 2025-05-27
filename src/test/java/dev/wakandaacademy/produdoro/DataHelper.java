@@ -65,4 +65,15 @@ public class DataHelper {
         return tarefaAlteracaoRequest;
     }
 
+    public static List<Tarefa> createListTarefasConcluidas() {
+        return List.of(
+                Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 1").idUsuario(usuario1)
+                        .status(StatusTarefa.A_FAZER).build(),
+                Tarefa.builder().build(),
+                Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 2").idUsuario(usuario1)
+                        .status(StatusTarefa.A_FAZER).build(),
+                Tarefa.builder().build(),
+                Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 3").idUsuario(usuario1)
+                        .status(StatusTarefa.A_FAZER).build());
+    }
 }

@@ -78,6 +78,18 @@ public class TarefaApplicationService implements TarefaService {
     }
 
     @Override
+    public void deletaTarefasConcluidas(String usuarioEmail, UUID idUsuario) {
+        log.info("[inicia] TarefaApplicationService - deletaTarefasConcluidas");
+        validaUsuario(usuarioEmail, idUsuario);
+        List<Tarefa> tarefas = tarefaRepository.buscaTarefasConcluidas(idUsuario);
+        if (tarefas.isEmpty()) {
+            throw APIException.build(HttpStatus.CONFLICT, "Usuário não possui nenhuma tarefa concluída!");
+        }
+        tarefaRepository.deletaTarefasConcluidas(tarefas);
+        log.info("[finaliza] TarefaApplicationService - deletaTarefasConcluidas");
+    }
+
+    @Override
     public void limparTodasAsTarefas(String usuario, UUID idUsuario) {
         log.info("[inicia] TarefaApplicationService - limparTodasAsTarefas");
         Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuario);
@@ -101,4 +113,11 @@ public class TarefaApplicationService implements TarefaService {
                         "minima de tarefa(as) cadastrada(as)");
             }
     }
+
+    private void validaUsuario(String usuarioEmail, UUID idUsuario) {
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuarioEmail);
+        usuarioRepository.buscaUsuarioPorId(idUsuario);
+        usuarioPorEmail.validaUsuario(idUsuario);
+    }
 }
+
