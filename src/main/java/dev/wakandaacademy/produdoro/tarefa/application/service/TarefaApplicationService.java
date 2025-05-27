@@ -15,7 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -27,7 +30,8 @@ public class TarefaApplicationService implements TarefaService {
     @Override
     public TarefaIdResponse criaNovaTarefa(TarefaRequest tarefaRequest) {
         log.info("[inicia] TarefaApplicationService - criaNovaTarefa");
-        Tarefa tarefaCriada = tarefaRepository.salva(new Tarefa(tarefaRequest));
+        int novaPosicao = tarefaRepository.contarTarefas(tarefaRequest.getIdUsuario());
+        Tarefa tarefaCriada = tarefaRepository.salva(new Tarefa(tarefaRequest, novaPosicao));
         log.info("[finaliza] TarefaApplicationService - criaNovaTarefa");
         return TarefaIdResponse.builder().idTarefa(tarefaCriada.getIdTarefa()).build();
     }
@@ -79,6 +83,8 @@ public class TarefaApplicationService implements TarefaService {
         tarefa.atualiza(tarefaAlteracaoRequest);
         tarefaRepository.salva(tarefa);
         log.info("[finaliza] TarefaApplicationService - editaTarefa");
+
+
     }
 
     @Override
@@ -139,6 +145,15 @@ public class TarefaApplicationService implements TarefaService {
         usuarioRepository.buscaUsuarioPorId(idUsuario);
         usuarioPorEmail.validaUsuario(idUsuario);
     }
-
+    @Override
+    public void usuarioModificaOrdemDeUmaTarefa(String emailUsuario, UUID idTarefa, int novaPosicao) {
+        log.info("[inicia] TarefaApplicationService - usuarioModificaOrdemDeUmaTarefa");
+        Tarefa tarefa = detalhaTarefa(emailUsuario,idTarefa);
+        List<Tarefa> tarefas = tarefaRepository.buscaTarefasDoUsuario(tarefa.getIdUsuario())
+                .stream().sorted(Comparator.comparingInt(Tarefa::getPosicao)).collect(Collectors.toList());
+        tarefaRepository.modificaOrdemTarefa(tarefa, tarefas, novaPosicao);
+        tarefa.alteraPosicao(novaPosicao);
+        tarefaRepository.salva(tarefa);
+        log.info("[finaliza] TarefaApplicationService - usuarioModificaOrdemDeUmaTarefa");
+    }
 }
-

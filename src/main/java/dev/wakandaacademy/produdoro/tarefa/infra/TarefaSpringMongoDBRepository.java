@@ -14,4 +14,6 @@ public interface TarefaSpringMongoDBRepository extends MongoRepository<Tarefa, U
     Optional<Tarefa> findByIdTarefa(UUID idTarefa);
     void deleteAllByIdUsuario(Usuario usuarioPorEmail);
     List<Tarefa> findAllTarefaByidUsuario(UUID idUsuario);
+
+    int countTarefaByIdUsuario(UUID idUsuario);
 }
