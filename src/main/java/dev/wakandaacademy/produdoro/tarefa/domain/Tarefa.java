@@ -76,7 +76,8 @@ public class Tarefa {
 	}
 
 	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
-			this.descricao = tarefaAlteracaoRequest.getDescricao();
+		this.descricao = tarefaAlteracaoRequest.getDescricao();
+	}
 
 	public void incrementaPomodoro(Tarefa tarefa) {
 		this.contagemPomodoro++;
@@ -92,11 +93,6 @@ public class Tarefa {
 		if (this.status.equals(StatusTarefa.CONCLUIDA)) {
 			throw APIException.build(HttpStatus.CONFLICT, "Tarefa já está concluída!");
 		}
-	}
-	}
-
-	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest){
-		this.descricao = tarefaAlteracaoRequest.getDescricao();
 	}
 
 	public void ativaTarefa(UUID idTarefa) {
