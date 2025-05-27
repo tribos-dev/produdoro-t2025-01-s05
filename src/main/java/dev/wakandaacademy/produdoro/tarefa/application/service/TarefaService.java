@@ -17,4 +17,5 @@ public interface TarefaService {
     List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(String email, UUID idUsuario);
     void limparTodasAsTarefas(String usuario, UUID idUsuario);
     void deletaTarefasConcluidas(String usuarioEmail, UUID idUsuario);
+    void usuarioModificaOrdemDeUmaTarefa(String emailUsuario, UUID idTarefa, int novaPosicao);
 }

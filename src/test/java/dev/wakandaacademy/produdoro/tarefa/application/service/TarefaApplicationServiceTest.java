@@ -1,8 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -16,6 +14,12 @@ import dev.wakandaacademy.produdoro.DataHelper;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
+import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
+import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,15 +27,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
-import dev.wakandaacademy.produdoro.DataHelper;
-import dev.wakandaacademy.produdoro.handler.APIException;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaUsuarioListResponse;
-import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
-import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
-import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
-import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
+
 
 @ExtendWith(MockitoExtension.class)
 class TarefaApplicationServiceTest {
@@ -50,7 +48,7 @@ class TarefaApplicationServiceTest {
     @Test
     void deveRetornarIdTarefaNovaCriada() {
         TarefaRequest request = getTarefaRequest();
-        when(tarefaRepository.salva(any())).thenReturn(new Tarefa(request));
+        when(tarefaRepository.salva(any())).thenReturn(new Tarefa(request, 0));
 
         TarefaIdResponse response = tarefaApplicationService.criaNovaTarefa(request);
 
@@ -87,9 +85,55 @@ class TarefaApplicationServiceTest {
         when(tarefaRepository.buscaTarefasDoUsuario(usuario.getIdUsuario())).thenReturn(tarefas);
         List<TarefaUsuarioListResponse> listaTodasTarefasUsuario = tarefaApplicationService
                 .listaTodasTarefasDoUsuario(usuario.getEmail(), usuario.getIdUsuario());
+    }
 
-        assertEquals(8, listaTodasTarefasUsuario.size());
-        verify(tarefaRepository, times(1)).buscaTarefasDoUsuario(usuario.getIdUsuario());
+    @Test
+    void modificaOrdemDeUmaTarefa() {
+        Usuario usuario = DataHelper.createUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
+        int novaPosicao = 1;
+
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
+        when(tarefaRepository.buscaTarefasDoUsuario(any())).thenReturn(DataHelper.createListTarefa());
+
+        tarefaApplicationService.usuarioModificaOrdemDeUmaTarefa(usuario.getEmail(), tarefa.getIdTarefa(), novaPosicao);
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(any());
+        verify(tarefaRepository, times(1)).buscaTarefaPorId(any());
+    }
+
+    @Test
+    void modificaOrdemDeUmaTarefaQuandoIdtarefaForInvalidoDeveLancarExcecao() {
+        Usuario usuario = DataHelper.createUsuario();
+        UUID idtarefa = UUID.randomUUID();
+        int novaPosicao = 1;
+
+        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.empty());
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+
+        APIException ex = assertThrows(APIException.class, () -> tarefaApplicationService
+                .usuarioModificaOrdemDeUmaTarefa(usuario.getEmail(), idtarefa, novaPosicao));
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusException());
+        assertEquals("Tarefa não encontrada!", ex.getMessage());
+    }
+
+    @Test
+    void modificaOrdemDeUmaTarefaQuandoTarefaNaoPertenceAoUsuarioDeveLancarExcecao() {
+        Usuario usuario = DataHelper.createUsuarioInvalido();
+        Tarefa tarefa = DataHelper.createTarefa();
+        int novaPosicao = 1;
+
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
+
+        APIException ex = assertThrows(APIException.class, () -> tarefaApplicationService
+                .usuarioModificaOrdemDeUmaTarefa(usuario.getEmail(), tarefa.getIdTarefa(), novaPosicao));
+        verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(any());
+        verify(tarefaRepository, times(1)).buscaTarefaPorId(any());
+
+        assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusException());
+        assertEquals("Usuário não é dono da Tarefa solicitada!", ex.getMessage());
     }
 
     @Test

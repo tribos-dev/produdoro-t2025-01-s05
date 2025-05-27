@@ -47,6 +47,10 @@ public class DataHelper {
         return tarefaReq;
     }
 
+    public static Usuario createUsuarioInvalido() {
+        return Usuario.builder().email("email@email.com").status(StatusUsuario.PAUSA_LONGA).idUsuario(UUID.randomUUID()).build();
+    }
+
     public static List<Tarefa> createListTarefa() {
         return List.of(Tarefa.builder().idTarefa(UUID.randomUUID()).descricao("tarefa 1").idUsuario(usuario1).build(),
                 Tarefa.builder().build(),
