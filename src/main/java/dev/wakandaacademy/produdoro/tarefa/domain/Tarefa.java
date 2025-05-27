@@ -3,6 +3,7 @@ package dev.wakandaacademy.produdoro.tarefa.domain;
 import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
@@ -56,6 +57,7 @@ public class Tarefa {
 		}
 	}
 
+<<<<<<< HEAD
 	public void desativaTarefa() {
 		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
 	}
@@ -69,4 +71,21 @@ public class Tarefa {
 	public void ativaTarefa() {
 		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
 	}
+=======
+	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
+			this.descricao = tarefaAlteracaoRequest.getDescricao();
+	}
+
+	public void concluiTarefa() {
+		validaStatusTarefaConcluida();
+		this.status = StatusTarefa.CONCLUIDA;
+	}
+
+	private void validaStatusTarefaConcluida() {
+		if (this.status.equals(StatusTarefa.CONCLUIDA)) {
+			throw APIException.build(HttpStatus.CONFLICT, "Tarefa já está concluída!");
+		}
+	}	
+>>>>>>> bdb5edef62d9fdf753087d3c76e21505980395c9
 }
+
