@@ -24,12 +24,14 @@ public interface TarefaAPI {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void editaTarefa(@RequestHeader(name = "Authorization",required = true) String token,
                      @PathVariable UUID idTarefa, @RequestBody @Valid TarefaAlteracaoRequest tarefaAlteracaoRequest);
+
     @GetMapping("/lista-tarefas/{idUsuario}")
     @ResponseStatus(code = HttpStatus.OK)
     List<TarefaUsuarioListResponse> listaTodasTarefasDoUsuario(
             @RequestHeader(name = "Authorization", required = true) String token, @PathVariable UUID idUsuario);
-    @PatchMapping("/{idTarefa}/modifica-posicao-tarefa")
+
+    @PatchMapping("/{idTarefa}/modifica-posicao-tarefa/{posicao}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     void usuarioModificaOrdemDeUmaTarefa(@RequestHeader(name = "Authorization", required = true) String token,
-                                         @PathVariable UUID idTarefa, @RequestParam(required = true, name = "posicao") int novaPosicao);
+                                         @PathVariable UUID idTarefa,  @PathVariable(required = true, name = "posicao") int novaPosicao);
 }
