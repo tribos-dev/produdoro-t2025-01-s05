@@ -5,6 +5,7 @@ import java.util.UUID;
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.usuario.domain.StatusUsuario;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
 import org.springframework.data.annotation.Id;
@@ -39,8 +40,9 @@ public class Tarefa {
 	private StatusTarefa status;
 	private StatusAtivacaoTarefa statusAtivacao;
 	private int contagemPomodoro;
+	private int posicao;
 
-	public Tarefa(TarefaRequest tarefaRequest) {
+	public Tarefa(TarefaRequest tarefaRequest, int novaPosicao) {
 		this.idTarefa = UUID.randomUUID();
 		this.idUsuario = tarefaRequest.getIdUsuario();
 		this.descricao = tarefaRequest.getDescricao();
@@ -49,6 +51,7 @@ public class Tarefa {
 		this.status = StatusTarefa.A_FAZER;
 		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
 		this.contagemPomodoro = 1;
+		this.posicao = novaPosicao;
 	}
 
 	public void pertenceAoUsuario(Usuario usuarioPorEmail) {
@@ -57,8 +60,9 @@ public class Tarefa {
 		}
 	}
 
-<<<<<<< HEAD
+
 	public void desativaTarefa() {
+
 		this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
 	}
 
@@ -71,10 +75,14 @@ public class Tarefa {
 	public void ativaTarefa() {
 		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
 	}
-=======
+
 	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest) {
 			this.descricao = tarefaAlteracaoRequest.getDescricao();
+
+	public void incrementaPomodoro(Tarefa tarefa) {
+		this.contagemPomodoro++;
 	}
+
 
 	public void concluiTarefa() {
 		validaStatusTarefaConcluida();
@@ -85,7 +93,23 @@ public class Tarefa {
 		if (this.status.equals(StatusTarefa.CONCLUIDA)) {
 			throw APIException.build(HttpStatus.CONFLICT, "Tarefa já está concluída!");
 		}
-	}	
->>>>>>> bdb5edef62d9fdf753087d3c76e21505980395c9
+	}
+	}
+
+	public void atualiza(TarefaAlteracaoRequest tarefaAlteracaoRequest){
+		this.descricao = tarefaAlteracaoRequest.getDescricao();
+	}
+
+	public void ativaTarefa(UUID idTarefa) {
+		this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+	}
+
+	public void alteraPosicao(int posicao) {
+		this.posicao= posicao;
+	}
+
+	public void ajustaPosicao(int novaPosicao) {
+		this.posicao = novaPosicao;
+	}
 }
 

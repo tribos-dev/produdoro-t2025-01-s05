@@ -20,6 +20,11 @@ public interface TarefaAPI {
     TarefaDetalhadoResponse detalhaTarefa(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idTarefa);
 
+    @PostMapping("/incrementaPomodoro/{idTarefa}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void incrementaPomodoro(@RequestHeader(name = "Authorization",required = true) String token,
+                       @PathVariable UUID idTarefa);
+
     @PatchMapping("/conclui-tarefa/{idTarefa}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void patchConcluiTarefa(@RequestHeader(name = "Authorization",required = true) String token,
@@ -45,4 +50,14 @@ public interface TarefaAPI {
             @RequestHeader(name = "Authorization", required = true) String token,
             @PathVariable UUID idUsuario);
 
+    @DeleteMapping("/{idUsuario}/deleta-tarefas-concluidas")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void deletaTarefasConcluidas(@RequestHeader(name = "Authorization",required = true) String token,
+            @PathVariable UUID idUsuario);
+
+
+    @PatchMapping("/{idTarefa}/modifica-posicao-tarefa/{posicao}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    void usuarioModificaOrdemDeUmaTarefa(@RequestHeader(name = "Authorization", required = true) String token,
+                                         @PathVariable UUID idTarefa,  @PathVariable(required = true, name = "posicao") int novaPosicao);
 }

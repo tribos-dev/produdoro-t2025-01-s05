@@ -11,11 +11,13 @@ public interface TarefaRepository {
 
     Tarefa salva(Tarefa tarefa);
     Optional<Tarefa> buscaTarefaPorId(UUID idTarefa);
-<<<<<<< HEAD
     void desativaTarefaAtiva(UUID idUsuario);
-=======
     void limpaTarefas(Usuario usuarioPorEmail);
     List<Tarefa> buscaTarefasDoUsuario(UUID idUsuario);
     void deletaTodasTarefasDoUsuario(List<Tarefa> tarefas);
->>>>>>> bdb5edef62d9fdf753087d3c76e21505980395c9
+    List<Tarefa> buscaTarefasConcluidas(UUID idUsuario);
+    void deletaTarefasConcluidas(List<Tarefa> tarefas);
+    void ajustaPosicaoDasTarefas(List<Tarefa> tarefasDoUsuario);
+    void modificaOrdemTarefa(Tarefa tarefa, List<Tarefa> tarefasUsuario, int novaPosicao);
+    int contarTarefas(UUID idUsuario);
 }
