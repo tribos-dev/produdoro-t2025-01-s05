@@ -121,7 +121,7 @@ public class TarefaApplicationService implements TarefaService {
         validaUsuario(usuarioEmail, idUsuario);
         List<Tarefa> tarefas = tarefaRepository.buscaTarefasConcluidas(idUsuario);
         if (tarefas.isEmpty()) {
-            throw APIException.build(HttpStatus.CONFLICT, "Usuário não possui nenhuma tarefa concluída!");
+            throw APIException.build(HttpStatus.NOT_FOUND, "Usuário não possui nenhuma tarefa concluída!");
         }
         tarefaRepository.deletaTarefasConcluidas(tarefas);
         log.info("[finaliza] TarefaApplicationService - deletaTarefasConcluidas");
