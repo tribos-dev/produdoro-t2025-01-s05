@@ -37,6 +37,13 @@ public class TarefaRestController implements TarefaAPI {
 	}
 
 	@Override
+	public void ativaTarefa(String token, UUID idTarefa) {
+		log.info("[inicia] TarefaRestController - ativaTarefa");
+		String email = getUsuarioByToken(token);
+		tarefaService.ativaTarefa(email, idTarefa);
+		log.info("[finaliza] TarefaRestController - ativaTarefa");
+	}
+	@Override
 	public void incrementaPomodoro(String token, UUID idTarefa) {
 		log.info("[inicia] TarefaRestController - incrementaPomodoro");
 		String emailUsuario = getUsuarioByToken(token);
@@ -44,6 +51,7 @@ public class TarefaRestController implements TarefaAPI {
 		log.info("[finaliza] TarefaRestController - incrementaPomodoro");
 	}
 
+	@Override
 	public void limparTodasAsTarefas(String token, UUID idUsuario) {
 		log.info("[inicia] TarefaRestController - limparTodasAsTarefas");
 		String usuario = getUsuarioByToken(token);
@@ -65,7 +73,6 @@ public class TarefaRestController implements TarefaAPI {
 		String usuario = getUsuarioByToken(token);
 		tarefaService.editaTarefa(usuario, idTarefa, tarefaAlteracaoRequest);
 		log.info("[finaliza] TarefaRestController - patchTarefa");
-
 	}
 
 
@@ -84,6 +91,7 @@ public class TarefaRestController implements TarefaAPI {
 		log.info("[finaliza] TarefaRestController - listaTodasTarefasUsuario");
 		return tarefasUsuario;
 	}
+
 	public void deletaTarefasConcluidas(String token, UUID idUsuario) {
 		log.info("[inicia] TarefaRestController - deletaTodasSuasTarefas");
 		String usuarioEmail = getUsuarioByToken(token);

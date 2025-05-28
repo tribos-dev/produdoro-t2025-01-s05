@@ -8,10 +8,16 @@ import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.PathVariable;
 
+
+import org.springframework.data.mongodb.core.query.Update;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,6 +30,7 @@ import java.util.stream.IntStream;
 public class TarefaInfraRepository implements TarefaRepository {
 
     private final TarefaSpringMongoDBRepository tarefaSpringMongoDBRepository;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public Tarefa salva(Tarefa tarefa) {
@@ -36,6 +43,7 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - salva");
         return tarefa;
     }
+
     @Override
     public Optional<Tarefa> buscaTarefaPorId(UUID idTarefa) {
         log.info("[inicia] TarefaInfraRepository - buscaTarefaPorId");
@@ -45,6 +53,14 @@ public class TarefaInfraRepository implements TarefaRepository {
     }
 
     @Override
+    public void desativaTarefaAtiva(UUID idUsuario) {
+        log.info("[inicia] TarefaInfraRepository - desativaTarefaAtiva");
+        Query query = new Query(Criteria.where("statusAtivacao").is("ATIVA").and("idUsuario").is(idUsuario));
+        Update update = new Update().set("statusAtivacao", "INATIVA");
+        mongoTemplate.updateMulti(query, update, Tarefa.class);
+        log.info("[inicia] TarefaInfraRepository - desativaTarefaAtiva");
+    }
+
     public void limpaTarefas(Usuario usuarioPorEmail) {
         log.info("[inicia] TarefaInfraRepository - limpaTarefas");
         try {
@@ -71,7 +87,6 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - deletaTodasTarefasDoUsuario");
 
     }
-
 
     @Override
     public List<Tarefa> buscaTarefasConcluidas(UUID idUsuario) {
@@ -154,5 +169,4 @@ public class TarefaInfraRepository implements TarefaRepository {
         tarefa.ajustaPosicao(novaPosicao);
         return tarefa;
     }
-
 }

@@ -35,6 +35,10 @@ public class DataHelper {
         return Usuario.builder().email("email@email.com").status(StatusUsuario.FOCO).idUsuario(usuario1).build();
     }
 
+    public static Usuario createUsuarioPausaCurta() {
+        return Usuario.builder().email("email@email.com").status(StatusUsuario.PAUSA_CURTA).idUsuario(usuario1).build();
+    }
+
     public static Tarefa createTarefa() {
         return Tarefa.builder().contagemPomodoro(1).idTarefa(UUID.fromString("06fb5521-9d5a-461a-82fb-e67e3bedc6eb"))
                 .idUsuario(usuario1).descricao("descricao tarefa").statusAtivacao(StatusAtivacaoTarefa.INATIVA).status(StatusTarefa.A_FAZER).build();

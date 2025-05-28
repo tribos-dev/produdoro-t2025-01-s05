@@ -1,5 +1,6 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
+
 import dev.wakandaacademy.produdoro.DataHelper;
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaAlteracaoRequest;
@@ -61,6 +62,7 @@ class TarefaApplicationServiceTest {
         Usuario usuario = DataHelper.createUsuario();
         TarefaAlteracaoRequest tarefaAlteracaoRequest = DataHelper.createAlteracaoTarefa();
 
+
         when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
         when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
 
@@ -74,6 +76,32 @@ class TarefaApplicationServiceTest {
     }
 
     @Test
+    void ativaTarefaDeveAtivarTarefa() {
+        UUID idTarefa = DataHelper.createTarefa().getIdTarefa();
+        UUID idUsuario = DataHelper.createUsuario().getIdUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
+        Usuario usuario = DataHelper.createUsuario();
+        String email = "email@gmail.com";
+        when(usuarioRepository.buscaUsuarioPorEmail(email)).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(idTarefa)).thenReturn(Optional.of(tarefa));
+        tarefaApplicationService.ativaTarefa(email, idTarefa);
+        verify(tarefaRepository, times(1)).buscaTarefaPorId(idTarefa);
+        verify(tarefaRepository, times(1)).desativaTarefaAtiva(idUsuario);
+        assertEquals(StatusAtivacaoTarefa.ATIVA, tarefa.getStatusAtivacao());
+    }
+
+    @Test
+    void ativaTarefaDeveRetornarErro() {
+        UUID idTarefaInvalido = UUID.randomUUID();
+        String email = "email@gmail.com";
+        when(tarefaRepository.buscaTarefaPorId(idTarefaInvalido)).thenReturn(Optional.empty());
+        APIException ex = assertThrows(APIException.class, () -> {
+            tarefaApplicationService.ativaTarefa(email, idTarefaInvalido);
+        });
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusException());
+    }
+
+
     void retornarTarefasCadastradasPeloUsuarioLogado() {
         Usuario usuario = DataHelper.createUsuario();
         List<Tarefa> tarefas = DataHelper.createListTarefa();
@@ -226,6 +254,7 @@ class TarefaApplicationServiceTest {
             tarefaApplicationService.limparTodasAsTarefas(usuario.getEmail(), usuario.getIdUsuario());
             verify(tarefaRepository, times(1)).deletaTodasTarefasDoUsuario(tarefas);
     }
+
         @Test
         void deveDeletarTarefasConcluidas() {
             Usuario usuario = DataHelper.createUsuario();
